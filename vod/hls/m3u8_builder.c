@@ -67,7 +67,7 @@ static const char encryption_type_sample_aes_cenc[] = "SAMPLE-AES-CTR";
 static const char sample_aes_cenc_uri_prefix[] = "data:text/plain;base64,";
 #endif // NGX_HAVE_OPENSSL_EVP
 
-static vod_str_t m3u8_ts_suffix = vod_string(".ts \n");
+static vod_str_t m3u8_ts_suffix = vod_string(".ts\n");
 static vod_str_t m3u8_m4s_suffix = vod_string(".m4s\n");
 static vod_str_t m3u8_vtt_suffix = vod_string(".vtt\n");
 
@@ -128,7 +128,7 @@ m3u8_builder_append_segment_name(
 	p = vod_sprintf(p, "%uD", segment_index + 1);
 	 
 	vod_str_t* ext = get_nginx_ext_string_by_index(segment_index);
-	p = vod_copy(p,suffix->data, suffix->len - 5);
+	p = vod_copy(p,suffix->data, suffix->len - 4);
 	p = vod_copy(p, ext->data, ext->len - 1); 
 	//	p = vod_copy(p, suffix->data, suffix->len);
 	
