@@ -32,14 +32,14 @@ char remake_ngx_http_vod_match_prefix_postfix( u_char* start,  u_char* end, vod_
     if ( ngx_http_vod_match_prefix_postfix(start, end, name, _jpg_file_ext) ||  
     ngx_http_vod_match_prefix_postfix(start, end, name, _png_file_ext) || 
     ngx_http_vod_match_prefix_postfix(start, end, name, _css_file_ext)) {
-        return 3;
+        return 4;
     }
     if (  ngx_http_vod_match_prefix_postfix(start, end, name, _js_file_ext)  ) {
-        return 2;
+        return 3;
     }
      
     if (  ngx_http_vod_match_prefix_postfix(start, end, name, _webp_file_ext)  ) {
-        return 4;
+        return 5;
     }
     return 0;
 }
