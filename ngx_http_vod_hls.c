@@ -8,6 +8,7 @@
 #include "vod/mp4/mp4_fragment.h"
 #include "vod/mp4/mp4_init_segment.h"
 #include "vod/udrm.h"
+#include "vod/remake/remake.h"
 
 #if (NGX_HAVE_OPENSSL_EVP)
 #include "vod/dash/edash_packager.h"
@@ -1213,8 +1214,16 @@ ngx_http_vod_hls_parse_uri_file_name(
 	uint32_t flags;
 	ngx_int_t rc;
 
+	char count = remake_ngx_http_vod_match_prefix_postfix(start_pos, end_pos, &conf->hls.m3u8_config.segment_file_name_prefix);
+ 
+	if (count > 0) {
+		start_pos += conf->hls.m3u8_config.segment_file_name_prefix.len;
+		end_pos -= count;
+		*request = &hls_ts_segment_request;
+		flags = PARSE_FILE_NAME_EXPECT_SEGMENT_INDEX;
+	}
 	// ts segment
-	if (ngx_http_vod_match_prefix_postfix(start_pos, end_pos, &conf->hls.m3u8_config.segment_file_name_prefix, ts_file_ext))
+	 else if (ngx_http_vod_match_prefix_postfix(start_pos, end_pos, &conf->hls.m3u8_config.segment_file_name_prefix, ts_file_ext))
 	{
 		start_pos += conf->hls.m3u8_config.segment_file_name_prefix.len;
 		end_pos -= (sizeof(ts_file_ext) - 1);
