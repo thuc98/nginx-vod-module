@@ -129,7 +129,7 @@ m3u8_builder_append_segment_name(
 	 
 	vod_str_t* ext = get_nginx_ext_string_by_index(segment_index);
 	p = vod_copy(p,suffix->data, suffix->len - 4);
-	p = vod_copy(p, ext->data, ext->len - 1); 
+	p = vod_copy(p, ext->data, ext->len); 
 	//	p = vod_copy(p, suffix->data, suffix->len);
 	
 

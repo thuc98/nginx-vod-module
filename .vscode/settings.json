@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "ngx_http_vod_request_parse.h": "c",
+        "ngx_http_vod_conf.h": "c",
+        "string": "c",
+        "string_view": "c"
+    }
+}
