@@ -1213,7 +1213,8 @@ ngx_http_vod_hls_parse_uri_file_name(
 {
 	uint32_t flags;
 	ngx_int_t rc;
-
+	uint8_t recheck = 0;
+ 
 	char count = remake_ngx_http_vod_match_prefix_postfix(start_pos, end_pos, &conf->hls.m3u8_config.segment_file_name_prefix);
  
 	if (count > 0) {
@@ -1221,6 +1222,7 @@ ngx_http_vod_hls_parse_uri_file_name(
 		end_pos -= count;
 		*request = &hls_ts_segment_request;
 		flags = PARSE_FILE_NAME_EXPECT_SEGMENT_INDEX;
+		recheck = 1;
 	}
 	// ts segment
 	 else if (ngx_http_vod_match_prefix_postfix(start_pos, end_pos, &conf->hls.m3u8_config.segment_file_name_prefix, ts_file_ext))
@@ -1326,6 +1328,11 @@ ngx_http_vod_hls_parse_uri_file_name(
 		return rc;
 	}
 
+	if (recheck && !valid_nginx_ext_string_with_index(request_params->segment_index, end_pos, count)) {
+		ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,
+			"ngx_http_vod_hls_parse_uri_file_name: unidentified request");
+		return ngx_http_vod_status_to_ngx_error(r, VOD_BAD_REQUEST);
+	}
 	return NGX_OK;
 }
 

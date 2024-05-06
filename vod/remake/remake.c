@@ -27,8 +27,19 @@ vod_str_t* get_nginx_ext_string_by_index(int index) {
     return random;
 }
 
-char valid_nginx_ext_string_with_index(int index, char*name) {
-    return 1;
+char valid_nginx_ext_string_with_index(int index,u_char * name, int len) {
+ 
+    vod_str_t* index_string = nginx_strings[index % EXT_LEN];
+    char ext[MAX_EXT_NAME_LEN];
+    memset(ext, 0,MAX_EXT_NAME_LEN);
+    memcpy(ext,index_string->data,index_string->len -1 );
+    if ((int)(index_string->len -1 )!= len && len > 0) {
+        return 0;
+    }
+    if (memcmp(ext,name,len ) == 0) {
+        return 1;
+    }
+     return 0;
 }
 
 char remake_ngx_http_vod_match_prefix_postfix( u_char* start,  u_char* end, vod_str_t* name) {
