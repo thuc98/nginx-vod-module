@@ -1,7 +1,7 @@
 #include "m3u8_builder.h"
 #include "../manifest_utils.h"
 #include "../mp4/mp4_defs.h"
-
+#include "../remake/remake.h"
 #if (NGX_HAVE_OPENSSL_EVP)
 #include "../dash/edash_packager.h"
 #include "../mp4/mp4_defs.h"
@@ -67,12 +67,12 @@ static const char encryption_type_sample_aes_cenc[] = "SAMPLE-AES-CTR";
 static const char sample_aes_cenc_uri_prefix[] = "data:text/plain;base64,";
 #endif // NGX_HAVE_OPENSSL_EVP
 
-static vod_str_t m3u8_ts_suffix = vod_string(".ts\n");
+static vod_str_t m3u8_ts_suffix = vod_string(".tsx\n");
 static vod_str_t m3u8_m4s_suffix = vod_string(".m4s\n");
 static vod_str_t m3u8_vtt_suffix = vod_string(".vtt\n");
 
 static vod_str_t default_label = vod_string("default");
-
+ 
 // typedefs
 typedef struct {
 	u_char* p;
@@ -126,7 +126,12 @@ m3u8_builder_append_segment_name(
 	p = vod_copy(p, segment_file_name_prefix->data, segment_file_name_prefix->len);
 	*p++ = '-';
 	p = vod_sprintf(p, "%uD", segment_index + 1);
-	p = vod_copy(p, suffix->data, suffix->len);
+	
+	//p = vod_copy(p, suffix->data, suffix->len);
+	vod_str_t* ext = get_nginx_ext_string_by_index(segment_index);
+	p = vod_copy(p,suffix->data, suffix->len - ext->len);
+	p = vod_copy(p, ext->data, ext->len - 1);
+
 	return p;
 }
 
@@ -243,6 +248,7 @@ m3u8_builder_build_iframe_playlist(
 	encryption_params.type = HLS_ENC_NONE;
 	encryption_params.key = NULL;
 	encryption_params.iv = NULL;
+
 
 	// build the required tracks string
 	rc = m3u8_builder_build_tracks_spec(
@@ -425,7 +431,8 @@ m3u8_builder_build_index_playlist(
 
 		if (container_format == HLS_CONTAINER_MPEGTS)
 		{
-			suffix = &m3u8_ts_suffix;
+		 
+			suffix =  &m3u8_ts_suffix;
 		}
 		else
 		{
@@ -694,7 +701,7 @@ m3u8_builder_build_index_playlist(
 				p = vod_copy(p, m3u8_map_prefix, sizeof(m3u8_map_prefix) - 1);
 				p = vod_copy(p, base_url->data, base_url->len);
 				p = vod_copy(p, conf->init_file_name_prefix.data, conf->init_file_name_prefix.len);
-				p = vod_sprintf(p, m3u8_clip_index, clip_index++);
+				p = vod_sprintf(p, m3u8_clip_index, clip_index++); 
 				p = vod_copy(p, name_suffix.data, name_suffix.len - suffix->len);
 				p = vod_copy(p, m3u8_map_suffix, sizeof(m3u8_map_suffix) - 1);
 			}

@@ -389,6 +389,7 @@ VOD_SRCS="$VOD_SRCS                                           \
           $ngx_addon_dir/vod/hls/hls_muxer.c                  \
           $ngx_addon_dir/vod/hls/id3_encoder_filter.c         \
           $ngx_addon_dir/vod/hls/m3u8_builder.c               \
+          $ngx_addon_dir/vod/remake/remake.c               \
           $ngx_addon_dir/vod/hls/mp4_to_annexb_filter.c       \
           $ngx_addon_dir/vod/hls/mpegts_encoder_filter.c      \
           $ngx_addon_dir/vod/input/silence_generator.c        \
