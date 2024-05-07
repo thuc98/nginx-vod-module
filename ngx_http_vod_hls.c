@@ -672,9 +672,15 @@ ngx_http_vod_hls_init_ts_frame_processor(
 	*frame_processor = (ngx_http_vod_frame_processor_t)hls_muxer_process;
 	*frame_processor_state = state;
 
-	content_type->len = sizeof(mpeg_ts_content_type) - 1;
-	content_type->data = (u_char *)mpeg_ts_content_type;
-
+	vod_str_t * file_type = get_content_type_nginx_ext_string_with_index(submodule_context->request_params.segment_index);
+	if (file_type) {
+		content_type->len = file_type->len;
+		content_type->data = (u_char *)file_type->data;
+	} else {
+		content_type->len = sizeof(mpeg_ts_content_type) - 1;
+		content_type->data = (u_char *)mpeg_ts_content_type;
+	}
+	  
 	return NGX_OK;
 }
 
@@ -1222,7 +1228,7 @@ ngx_http_vod_hls_parse_uri_file_name(
 		end_pos -= count;
 		*request = &hls_ts_segment_request;
 		flags = PARSE_FILE_NAME_EXPECT_SEGMENT_INDEX;
-		recheck = 1;
+		recheck = 1; 
 	}
 	// ts segment
 	 else if (ngx_http_vod_match_prefix_postfix(start_pos, end_pos, &conf->hls.m3u8_config.segment_file_name_prefix, ts_file_ext))
